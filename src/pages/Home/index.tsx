@@ -14,6 +14,11 @@ export default function Home() {
         setRole(retorno);
     }
 
+    async function deslogar(){
+        consultApi(nav, 'put', '/deslogar', null);
+        setRole(null);
+    }
+
     useEffect(() => {
         atualizarRole();
     }, [consultApi]);
@@ -30,7 +35,12 @@ export default function Home() {
             }
 
             {
-                role &&  <p>Você está logado</p>
+                role &&
+                <div>
+                    <p>Você está logado</p>
+                    <button onClick={ deslogar }>Deslogar</button>
+                </div>
+
             }
             {
 
