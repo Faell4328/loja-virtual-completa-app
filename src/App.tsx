@@ -4,7 +4,7 @@ import Layout from './Layout';
 import Home from './pages/Home';
 import { ConfigSystem, CreateUserAdmin } from './pages/Instalacao';
 import { Confirmacao, ConfirmacaoHash } from './pages/Confirmacao';
-import { ListarUsers } from './pages/Admin';
+import { ListarUsuarios, ListarUsuarioEspecifico } from './pages/Admin';
 import Whatsapp from './pages/Whatsapp';
 import { Cadastrar, Login } from './pages/LoginCadastro';
 import { InformacoesUsuario } from './pages/Usuario';
@@ -32,7 +32,11 @@ const router = createBrowserRouter([
             },
             {
                 path: '/admin/users',
-                element: <ListarUsers />
+                element: <ListarUsuarios />
+            },
+            {
+                path: '/admin/user/:hash',
+                element: <ListarUsuarioEspecifico />
             },
             {
                 path: '/login',

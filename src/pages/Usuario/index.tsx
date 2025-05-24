@@ -128,7 +128,7 @@ export function InformacoesUsuario(){
     }
 
     async function consultarCep(cep: string){
-        const fetchPromise = fetch(`https://viacep.com.br/ws/${cep}/json/`)
+        fetch(`https://viacep.com.br/ws/${cep}/json/`)
             .then((response: any) => response.json())
             .then((data: any) => {
                 if(data.error == undefined){
