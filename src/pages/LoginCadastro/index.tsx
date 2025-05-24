@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router";
 import consultApi from '../../services/consultApi';
 
 export function Login(){
@@ -9,13 +9,16 @@ export function Login(){
     }
 
     return(
-        <form action={ logar }>
-            <label>Email</label><br />
-            <input type='text' name='email' /><br />
-            <label>Senha</label><br />
-            <input type='password' name='password' /><br />
-            <input type='submit' value='Enviar' />
-        </form>
+        <div>
+            <form action={ logar }>
+                <label>Email</label><br />
+                <input type='text' name='email' /><br />
+                <label>Senha</label><br />
+                <input type='password' name='password' /><br />
+                <input type='submit' value='Enviar' />
+            </form>
+            <Link to='/recuperacao/senha'>Esqueceu a senha?</Link>
+        </div>
     )
 }
 

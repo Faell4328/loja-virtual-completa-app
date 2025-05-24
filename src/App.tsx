@@ -6,8 +6,9 @@ import { ConfigSystem, CreateUserAdmin } from './pages/Instalacao';
 import { Confirmacao, ConfirmacaoHash } from './pages/Confirmacao';
 import { ListarUsers } from './pages/Admin';
 import Whatsapp from './pages/Whatsapp';
-import { Cadastrar, Login } from './pages/Sistema';
+import { Cadastrar, Login } from './pages/LoginCadastro';
 import { InformacoesUsuario } from './pages/Usuario';
+import { RecuperarSenha, SolicitarRecuperarSenha } from './pages/RecuperarSenha';
 
 const router = createBrowserRouter([
     {
@@ -24,10 +25,6 @@ const router = createBrowserRouter([
             {
                 path: '/instalacao/admin',
                 element: <CreateUserAdmin />
-            },
-            {
-                path: '/confirmacao',
-                element: <Confirmacao />
             },
             {
                 path: '/admin/whatsapp',
@@ -50,8 +47,20 @@ const router = createBrowserRouter([
                 element: <InformacoesUsuario />
             },
             {
+                path: '/confirmacao',
+                element: <Confirmacao />
+            },
+            {
                 path: '/confirmacao/:hash',
                 element: <ConfirmacaoHash />
+            },
+            {
+                path: '/recuperacao/senha',
+                element: <SolicitarRecuperarSenha />
+            },
+            {
+                path: '/recuperacao/senha/:hash',
+                element: <RecuperarSenha />
             }
         ]
     }
