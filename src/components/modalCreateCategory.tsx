@@ -1,10 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { Button, Form, Input, Modal } from "antd";
-import { useState } from "react";
-import { formStyle } from "../styles/confirmacao.style";
-import { containerButtonStyle, contentFormStyle } from "../styles/instalacao.style";
-import Link from "next/link";
+import { contentFormStyle } from "../styles/instalacao.style";
 import { useRouter } from "next/navigation";
 import { ApiProps } from "../interface/returnApi";
 import { consultApiService } from "../service/consultApiService";

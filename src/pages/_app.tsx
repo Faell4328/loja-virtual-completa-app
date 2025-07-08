@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast';
 export default function App ({ Component, pageProps }: AppProps){
   return(
     <>
-    <Toaster position="top-center" reverseOrder={false} />
+    <Toaster position="bottom-center" reverseOrder={false} />
     <ConfigProvider>
       <Component {...pageProps} />
     </ConfigProvider>
