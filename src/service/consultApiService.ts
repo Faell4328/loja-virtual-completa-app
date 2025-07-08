@@ -1,13 +1,14 @@
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import toast from 'react-hot-toast';
 
 interface ReturnApiProps{
   redirect: string | null;
   error: string | null;
   ok: string | null;
-  data: any | null;
+  data: unknown | null;
 }
 
-export async function consultApiService(nav: any, method: "GET" | "POST" | "PUT" | "DELETE", router: string, formData: FormData | null){
+export async function consultApiService(nav: AppRouterInstance, method: "GET" | "POST" | "PUT" | "DELETE", router: string, formData: FormData | null){
   let returnApi;
   try{
     returnApi = await fetch(process.env.NEXT_PUBLIC_URL_SERVER+router,
@@ -37,15 +38,12 @@ export async function consultApiService(nav: any, method: "GET" | "POST" | "PUT"
 
   if(returnApiTrated.ok != null){
     toast.success(returnApiTrated.ok);
-    console.log("Entrou no sucesso");
   }
-  if(returnApiTrated.error != null){
+  else if(returnApiTrated.error != null){
     toast.error(returnApiTrated.error);
   }
   if(returnApiTrated.redirect != null){
     nav.push(returnApiTrated.redirect);
   }
-  if(returnApiTrated.data != null){
-    return returnApiTrated;
-  }
+  return returnApiTrated;
 }

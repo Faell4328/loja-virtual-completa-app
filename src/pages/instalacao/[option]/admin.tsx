@@ -1,12 +1,19 @@
 /** @jsxImportSource @emotion/react */
-import { css } from '@emotion/react';
 
 import { useRouter } from "next/navigation";
 import {  useEffect,useState } from "react"
 import { Button, Form, Input } from 'antd';
 
-import { consultApiService } from "@/service/consultApiService";
-import { containerFormStyle, formStyle, imageStyle, contentFormStyle } from "./instalacao.style";
+import { containerFormStyle, formStyle, imageStyle, contentFormStyle, containerButtonStyle } from "../../../styles/instalacao.style";
+import Image from "next/image";
+import { consultApiService } from "../../../service/consultApiService";
+
+interface FormDataProps{
+  name: string;
+  phone: string;
+  email: string;
+  password: string;
+}
 
 export default function Admin(){
   const nav = useRouter();
@@ -31,14 +38,14 @@ export default function Admin(){
     }
   }, [])
 
-  function formSubmit(data: any){
+  function formSubmit(data: FormDataProps){
 
     const form = new FormData();
 
-    form.append("name", data.name as string)
-    form.append("phone", data.phone as string)
-    form.append("email", data.email as string)
-    form.append("password", data.password as string)
+    form.append("name", data.name);
+    form.append("phone", data.phone);
+    form.append("email", data.email);
+    form.append("password", data.password);
 
     consultApiService(nav, "POST", "/instalacao/admin", form);
     return;
@@ -47,7 +54,7 @@ export default function Admin(){
   return(
     <div css={containerFormStyle}>
       <Form css={formStyle} name="basic" layout="vertical" onFinish={(e) => formSubmit(e)}>
-        <img css={imageStyle} src={robo} />
+        <Image width="200" height="200" alt="Imagem do Mascote" css={imageStyle} src={robo} />
         <Form.Item label="Nome:" name="name" rules={[{ required: true, message: "Campo obrigatório" }]} css={ contentFormStyle} >
           <Input />
         </Form.Item>
@@ -60,7 +67,7 @@ export default function Admin(){
         <Form.Item label="Senha:" name="password" rules={[{ required: true, message: "Campo obrigatório" }]} css={ contentFormStyle }>
           <Input.Password type="primary" onFocus={ () => setRobo("/feliz_tampando_olho.png") } onBlur={ () => setRobo("/feliz_normal.png") }/>
         </Form.Item>
-        <Form.Item css={ containerFormStyle }>
+        <Form.Item css={containerButtonStyle}>
           <Button style={{ width: 300, padding: 20 }} type="primary" htmlType="submit">Enviar</Button>
         </Form.Item>
       </Form>

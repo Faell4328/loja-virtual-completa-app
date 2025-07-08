@@ -1,20 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const body = css`
+export const bodyStyle = css`
 display: flex;
 flex-direction: column;
 justify-content: center;
 align-items: center;
-width: 100%;
+min-height: 90dvh
 `;
 
-const container = css`
-max-width: 400px;
-border: 1px solid #aaa;
+export const formStyle = css`
+border: 1px solid #eee;
 border-radius: 30px;
-padding: 30px;
-margin: 0 50px;
-`
-
-export { body, container }
+padding: 20px;
+`;

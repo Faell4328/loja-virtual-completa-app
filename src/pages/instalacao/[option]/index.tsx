@@ -1,13 +1,17 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-import { GetServerSideProps } from "next";
 import { useRouter } from "next/router"
 import { Steps } from "antd";
 import { UserAddOutlined, SettingOutlined } from "@ant-design/icons"
 import Config from "./config";
 import Admin from "./admin";
-import { consultApiService } from "@/service/consultApiService";
+import { bodyStyle } from "../../../styles/confirmacao.style";
+import { stepStyle } from "../../../styles/instalacao.style";
+
+interface ReturnApiProps{
+  redirect: string;
+}
 
 export default function Instalacao(){
   const nav = useRouter();
@@ -15,39 +19,44 @@ export default function Instalacao(){
   let optionSteps = 0;
 
   if(option == "config"){
-    optionSteps = 0
+    optionSteps = 1
   }
   else if(option == "admin"){
-    optionSteps = 1
+    optionSteps = 2
   }
 
   return(
-    <>
-      <Steps
-        css={css`@media(max-width: 575px){ align-items: center }`}
-        current={optionSteps}
-        items={[
-          {
-            title: "Configuração do sistema",
-            description: "Etapa 1",
-            icon: <SettingOutlined />,
-          },
-          {
-            title: "Criação de conta admin",
-            description: "Etapa 2",
-            icon: <UserAddOutlined />
-          },
-        ]}
-      />
-      { optionSteps == 0 && <Config /> }
-      { optionSteps == 1 && <Admin /> }
-    </>
+    <div css={bodyStyle}>
+      <div style={{ marginBottom: 30 }}>
+        <Steps
+          css={stepStyle}
+          current={optionSteps}
+          items={[
+            {
+              title: "Configuração do sistema",
+              description: "Etapa 1",
+              icon: <SettingOutlined />,
+            },
+            {
+              title: "Criação de conta admin",
+              description: "Etapa 2",
+              icon: <UserAddOutlined />
+            },
+          ]}
+        />
+      </div>
+      <div style={{ height: "100%" }}>
+        { optionSteps == 0 && (<h1 style={{ textAlign: "center" }}>Rota inválida</h1>)}
+        { optionSteps == 1 && <Config /> }
+        { optionSteps == 2 && <Admin /> }
+      </div>
+    </div>
   )
 }
 
 export const getServerSideProps = async () => {
-  let returnApi:any = await fetch(process.env.NEXT_PUBLIC_URL_SERVER+"/");
   try{
+    const returnApi = await fetch(process.env.NEXT_PUBLIC_URL_SERVER+"/");
     if(returnApi === null){
       console.log("Erro ao consultar API")
       return{
@@ -58,9 +67,9 @@ export const getServerSideProps = async () => {
       }
     }
 
-    returnApi = await returnApi.json();
+    const returnApiTreated: ReturnApiProps = await returnApi.json();
 
-    if(returnApi.redirect === "/instalacao/config" || returnApi.redirect === "/instalacao/admin"){
+    if(returnApiTreated.redirect === "/instalacao/config" || returnApiTreated.redirect === "/instalacao/admin"){
       return{
         props: {}
       }
@@ -76,7 +85,7 @@ export const getServerSideProps = async () => {
 
   }
   catch(error){
-    console.log("Erro ao consultar API")
+    console.log("Erro ao consultar API", error)
     return{
       redirect: {
         destination: '/',
