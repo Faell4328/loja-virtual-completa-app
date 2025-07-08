@@ -7,6 +7,7 @@ import { UserProps } from '../interface/user';
 import { consultApiService } from '../service/consultApiService';
 import { ApiProps } from '../interface/returnApi';
 import MenuHome from '../components/menuHome';
+import ModalCreateCategory from '../components/modalCreateCategory';
 
 export default function Home() {
   const nav = useRouter();
