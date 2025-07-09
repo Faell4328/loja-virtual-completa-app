@@ -7,7 +7,8 @@ import { ApiProps } from "../interface/returnApi";
 import { consultApiService } from "../service/consultApiService";
 import { RcFile, UploadFile } from "antd/es/upload";
 import { UploadOutlined } from "@ant-design/icons";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useForm } from "antd/es/form/Form";
 
 interface FormDataProps{
   name: string;
@@ -37,6 +38,7 @@ interface TypeProps{
 export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProductPage, categorysApi }: TypeProps){
   const nav = useRouter();
   const [categorysSelect, setCategorySelect] = useState<{ value: string, label: string }[]>([]);
+  const [formElement] = useForm();
 
   useEffect(() => {
     const categorys = categorysApi.map((category) => {
@@ -87,7 +89,7 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProd
     const api: ApiProps | null = await consultApiService(nav, "POST", "/admin/produto", form);
 
     if(api !== null && api.ok !== undefined && api.error == undefined){
-      setModalOpen(false);
+      formElement.resetFields();
       updateProductPage();
     }
 
@@ -97,15 +99,15 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProd
   return(
     <>
       <Modal title="Adicionar Produto" open={modalOpen} onOk={ () => setModalOpen(false) } onCancel={ () => setModalOpen(false) } footer={[]} style={{ top: 20, display: "flex", justifyContent: "center" }}>
-        <Form style={{ display: "flex", flexDirection: "column", margin: "auto", width: "85%" }} initialValues={{ options: [{ option: '', quantity: '' }] }} name="basic" layout="vertical" onFinish={(e) => formSubmit(e)}>
+        <Form form={formElement} style={{ display: "flex", flexDirection: "column", margin: "auto", width: "85%" }} initialValues={{ options: [{ option: '', quantity: '' }] }} name="basic" layout="vertical" onFinish={(e) => formSubmit(e)}>
           <Form.Item label="Nome Produto:" name="name" rules={[{ required: true, message: "Campo obrigatório" }]} style={{ marginTop: 30, width: "100%" }} css={ contentFormStyle}>
             <Input />
           </Form.Item>
           <Form.Item label="Valor:" name="originalPrice" rules={[{ required: true, message: "Campo obrigatório" }]} style={{ width: "100%" }} css={ contentFormStyle}>
-            <InputNumber style={{ width: "100%" }} addonBefore="R$"/>
+            <InputNumber type="number" style={{ width: "100%" }} addonBefore="R$"/>
           </Form.Item>
           <Form.Item label="Valor promoção:" name="promotionPrice" style={{ width: "100%" }} css={ contentFormStyle}>
-            <InputNumber style={{ width: "100%" }} addonBefore="R$"/>
+            <InputNumber type="number" style={{ width: "100%" }} addonBefore="R$"/>
           </Form.Item>
           <Form.Item label="Categoria:" name="categoryId" rules={[{ required: true, message: "Campo obrigatório" }]} style={{ width: "100%" }} css={ contentFormStyle}>
             <Select options={categorysSelect} />

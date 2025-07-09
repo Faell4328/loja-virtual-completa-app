@@ -2,7 +2,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ["192.168.100.117"]
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: '192.168.100.117',
+        port: '5000',
+        pathname: '/files/product/**',
+      },
+    ],
   },
   transpilePackages: [
     "antd",

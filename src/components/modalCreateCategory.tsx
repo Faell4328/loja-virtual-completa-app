@@ -5,6 +5,7 @@ import { contentFormStyle } from "../styles/instalacao.style";
 import { useRouter } from "next/navigation";
 import { ApiProps } from "../interface/returnApi";
 import { consultApiService } from "../service/consultApiService";
+import { useForm } from "antd/es/form/Form";
 
 interface FormDataProps{
   name: string;
@@ -12,6 +13,7 @@ interface FormDataProps{
 
 export default function ModalCreateCategory({ modalOpen, setModalOpen, updateCategoryPage }){
   const nav = useRouter();
+  const [formElement] = useForm();
 
   async function formSubmit(data: FormDataProps){
 
@@ -22,7 +24,7 @@ export default function ModalCreateCategory({ modalOpen, setModalOpen, updateCat
     const api: ApiProps | null = await consultApiService(nav, "POST", "/admin/categoria", form);
 
     if(api !== null && api.ok !== undefined && api.error == undefined){
-      setModalOpen(false);
+      formElement.resetFields();
       updateCategoryPage();
     }
 
@@ -32,7 +34,7 @@ export default function ModalCreateCategory({ modalOpen, setModalOpen, updateCat
   return(
     <>
       <Modal title="Adicionar Categoria" open={modalOpen} onOk={ () => setModalOpen(false) } onCancel={ () => setModalOpen(false) } footer={[]}>
-        <Form style={{ display: "flex", flexDirection: "column", alignItems: "center" }} name="basic" layout="vertical" onFinish={(e) => formSubmit(e)}>
+        <Form form={formElement} style={{ display: "flex", flexDirection: "column", alignItems: "center" }} name="basic" layout="vertical" onFinish={(e) => formSubmit(e)}>
           <Form.Item label="Nome Categoria:" name="name" rules={[{ required: true, message: "Campo obrigatório" }]} style={{ marginTop: 30 }} css={ contentFormStyle}>
             <Input />
           </Form.Item>
