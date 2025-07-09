@@ -32,9 +32,11 @@ export default function Config(){
     async function consultApi(){
       const returnApi = await consultApiService(nav, "GET", "/", null);
       apiConsulted.current = true;
-      if(returnApi !== null && returnApi?.redirect != "/instalacao/admin"){
+      if(returnApi?.redirect != "/instalacao/config"){
         nav.push("/");
+        return;
       }
+      return;
     }
 
     consultApi();

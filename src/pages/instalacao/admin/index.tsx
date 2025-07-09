@@ -27,8 +27,9 @@ export default function Admin(){
     async function consultApi(){
       const returnApi = await consultApiService(nav, "GET", "/", null);
       apiConsulted.current = true
-      if(returnApi !== null && returnApi?.redirect != "/instalacao/admin"){
+      if(returnApi?.redirect != "/instalacao/admin"){
         nav.push("/");
+        return;
       }
     }
 
