@@ -114,6 +114,9 @@ export default function MenuHome({ user }){
               {
                 label: (<div onClick={() => setModalOpenCreateProduct(true)}>Adicionar Produto</div>), key: "add-product"
               },
+              {
+                label: (<Link href="/admin/whatsapp">WhatsApp</Link>), key: "whatsapp"
+              },
             ]},
             { type: "group", label: "Conta" , children: [
               { label: (<div onClick={ () => { consultApiService(nav, "PUT", "/deslogar", null); nav.refresh() } }>Deslogar</div>), key:"1" },

@@ -23,6 +23,26 @@ export default function RecuperacaoSenha(){
 
   const [ returnApiState, setReturApiState ] = useState(""); 
 
+  useEffect(() => {
+    async function consultApi(){
+      const apiData = await consultApiService(nav, "GET", `/recuperacao/senha/${hash}`, null);
+      if(apiData !== undefined && apiData !== null){
+        console.log(apiData);
+        if(apiData.error !== null && apiData.error !== "A senha 1 deve ter no mínimo 8 caracteres" && apiData.error !== "As senhas estão diferentes"){
+          setReturApiState(apiData?.error as string);
+          return;
+        }
+        else if(apiData.ok !==null){
+          setReturApiState(apiData?.ok as string);
+          return;
+        }
+      }
+    }
+    if(nav && hash){
+      consultApi();
+    }
+  }, [hash])
+
   async function formSubmit(data: FormDataProps){
     const form = new FormData();
 
