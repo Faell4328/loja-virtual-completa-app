@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { SearchOutlined, UserOutlined } from '@ant-design/icons';
 import ModalCreateCategory from "./modalCreateCategory";
 import ModalCreateProduct from "./modalCreateProduct";
+import Image from "next/image";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -15,7 +16,9 @@ interface ProductsProps{
   price: string;
   originalPrice: number,
   promotionPrice: number,
-  imagesProduct: [{ imagemUrl: string }]
+  imagesProduct: {
+    imagemUrl: string[]
+  }
 }
 
 interface CategoryApiProps{
@@ -33,6 +36,9 @@ export default function MenuHome({ user }){
   const [ menuItemsCategoryState, setMenuItemsCategoryState ] = useState<MenuItem[]>([]);
   const [ menuItemsSeachState, setMenuItemsSeachState ] = useState<AutoCompleteProps['options']>([]);
   const [ menuItemsUserState, setMenuItemsUserState ] = useState<MenuItem[]>([]);
+
+  const valueAutoComplete = useRef("");
+  const [ openAutoComplete, setOpenAutoComplete ] = useState(false);
 
   async function getInformationCategory(){
     const dataCategories = await consultApiService(nav, "GET", "/categorias", null);
@@ -64,7 +70,7 @@ export default function MenuHome({ user }){
       let products = returnApi.data as unknown as ProductsProps[];
       if(products.length > 0){
         let productsSearch: AutoCompleteProps['options'] = products.map((product) => {
-          return { key: product.id, label: product.name, value: product.name }
+          return { key: product.id, label: (<div style={{ display: "flex", alignItems: "center" }} key={product.name}><Image src={process.env.NEXT_PUBLIC_URL_SERVER+"/files/product/"+product.imagesProduct[0].imageUrl} alt="Imagem do produto" width={50} height={50} style={{ objectFit: "contain", marginRight: 20 }}/><span style={{ overflowWrap: "break-word", whiteSpace: "normal" }}>{product.name}</span></div>), value: product.name }
         })
         setMenuItemsSeachState(productsSearch);
       }
@@ -134,6 +140,14 @@ export default function MenuHome({ user }){
   
   }, []);
 
+  function productSearch(inputValue: string, option: { value: string }){
+    const label = option?.value;
+    if (typeof label === 'string') {
+      return label.toLowerCase().includes(inputValue.toLowerCase());
+    }
+    return false;
+  }
+
   return(
     <div>
       { user == "OFF" &&
@@ -141,8 +155,8 @@ export default function MenuHome({ user }){
           <div>
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
               <Menu mode="horizontal" items={menuItemsCategoryState} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
-              <div style={{ width: "50%", display: "flex", justifyContent: "center" }}>
-                <AutoComplete placeholder="Procurar produto" options={menuItemsSeachState} onSelect={() => {return "teste"}} filterOption={(inputValue, option) => { const label = option?.label;  if (typeof label === 'string') {return label.toLowerCase().includes(inputValue.toLowerCase());}return false;}}  style={{ width: "90%", height: "80%"}}/>
+              <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+                <AutoComplete placeholder="Procurar produto" open={openAutoComplete} options={menuItemsSeachState} onSearch={(value) => {if(value!=""){ valueAutoComplete.current = value; setOpenAutoComplete(true)} else{ valueAutoComplete.current = value; setOpenAutoComplete(false)} }} onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)} onBlur={() => setOpenAutoComplete(false)} filterOption={(inputValue: string, option: { value: string }) => productSearch(inputValue, option)}  style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
@@ -157,7 +171,7 @@ export default function MenuHome({ user }){
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
               <Menu mode="horizontal" items={menuItemsCategoryState} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
               <div style={{ width: "50%", display: "flex", justifyContent: "center" }}>
-                <AutoComplete placeholder="Procurar produto" options={menuItemsSeachState} onSelect={() => {return "teste"}} filterOption={(inputValue, option) => { const label = option?.label;  if (typeof label === 'string') {return label.toLowerCase().includes(inputValue.toLowerCase());}return false;}}  style={{ width: "90%", height: "80%"}}/>
+                <AutoComplete placeholder="Procurar produto" open={openAutoComplete} options={menuItemsSeachState} onSearch={(value) => {if(value!=""){ valueAutoComplete.current = value; setOpenAutoComplete(true)} else{ valueAutoComplete.current = value; setOpenAutoComplete(false)} }} onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)} onBlur={() => setOpenAutoComplete(false)} filterOption={(inputValue: string, option: { value: string }) => productSearch(inputValue, option)}  style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
@@ -172,7 +186,7 @@ export default function MenuHome({ user }){
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
               <Menu mode="horizontal" items={menuItemsCategoryState} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
               <div style={{ width: "45%", display: "flex", justifyContent: "center" }}>
-                <AutoComplete placeholder="Procurar produto" options={menuItemsSeachState} onSelect={() => {return "teste"}} filterOption={(inputValue, option) => { const label = option?.label;  if (typeof label === 'string') {return label.toLowerCase().includes(inputValue.toLowerCase());}return false;}}  style={{ width: "90%", height: "80%"}}/>
+                <AutoComplete placeholder="Procurar produto" open={openAutoComplete} options={menuItemsSeachState} onSearch={(value) => {if(value!=""){ valueAutoComplete.current = value; setOpenAutoComplete(true)} else{ valueAutoComplete.current = value; setOpenAutoComplete(false)} }} onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)} onBlur={() => setOpenAutoComplete(false)} filterOption={(inputValue: string, option: { value: string }) => productSearch(inputValue, option)}  style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} style={{ width: "25%", display: "flex", justifyContent: "center", border: 0 }}/>
