@@ -118,44 +118,20 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProd
               <div style={{ width: "100%" }}>
                 <h3 style={{ textAlign: 'center', padding: 0, marginTop: 0 }}>Opções</h3>
                 {fields.map(({ key, name, ...restField }) => (
-                  <div
-                    key={key}
-                    style={{
-                      border: '1px solid #eee',
-                      width: '100%',
-                      borderRadius: 20,
-                      padding: 20,
-                      boxSizing: 'border-box',
-                      marginBottom: 20,
-                    }}
-                  >
-
+                  <div key={key} style={{ border: '1px solid #eee', width: '100%', borderRadius: 20, padding: 20, boxSizing: 'border-box', marginBottom: 20 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'option']}
-                        label="Opção"
-                        style={{ width: '45%' }}
-                      >
+                      <Form.Item {...restField} name={[name, 'option']} label="Opção" style={{ width: '45%' }}>
                         <Input />
                       </Form.Item>
 
-                      <Form.Item
-                        {...restField}
-                        name={[name, 'quantity']}
-                        label="Quantidade"
-                        style={{ width: '45%' }}
-                      >
+                      <Form.Item {...restField} name={[name, 'quantity']} label="Quantidade" style={{ width: '45%' }} >
                         <Input type="number" />
                       </Form.Item>
                     </div>
 
                     {
                       key!=0 && 
-                      <Button
-                        onClick={() => remove(name)}
-                        style={{ width: "100%", marginTop: 10, backgroundColor: "#f44", color: "#fff" }}
-                      >
+                      <Button onClick={() => remove(name)} style={{ width: "100%", marginTop: 10, backgroundColor: "#f44", color: "#fff" }}>
                         Remover essa opção
                       </Button>
                     }
@@ -163,7 +139,7 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProd
                 ))}
 
                 <Form.Item>
-                  <Button type="primary" onClick={() => add()} block>
+                  <Button type="default" style={{ backgroundColor: "#777", color: "#fff" }} onClick={() => add()} block>
                     Adicionar mais opção
                   </Button>
                 </Form.Item>

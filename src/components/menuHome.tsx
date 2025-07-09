@@ -45,53 +45,14 @@ export default function MenuHome({ user }){
 
       let menuItems: MenuItem[] = [];
 
-      if(user.role == "ADMIN"){
-        menuItems = [
-          {
-            label: "Categorias", key: "menu-categorys", children:[
-              { type: "group", label: "Admin" , children: [
-                {
-                  label: (<div onClick={() => setModalOpenCreateCategory(true)}>Adicionar Categoria</div>), key: "add-category"
-                },
-                {
-                  label: (<div onClick={() => setModalOpenCreateProduct(true)}>Adicionar Produto</div>), key: "add-product"
-                },
-              ]},
-              { type: "group", label: "Categorias" , children: menuCategory}
-            ]
-          }
-        ];
-      }
-      else{
-        menuItems = [
-          {
-            label: "Categorias", key: "menu-categorys", children:[
-              { type: "group", label: "categorias" , children: menuCategory}
-            ]
-          }
-        ];
-      }
+      menuItems = [
+        {
+          label: "Categorias", key: "menu-categorys", children:[
+            { type: "group", label: "Categorias" , children: menuCategory}
+          ]
+        }
+      ];
 
-      setMenuItemsCategoryState(menuItems);
-    }
-    else{
-      let menuItems: MenuItem[] = [];
-      if(user.role == "ADMIN"){
-        menuItems = [
-          {
-            label: (<Link href="/categorias">Categorias</Link>), key: "menu-categorys", children:[
-              { type: "group", label: "Admin" , children: [
-                {
-                  label: (<div onClick={() => setModalOpenCreateCategory(true)}>Adicionar Categoria</div>), key: "add-category"
-                },
-                {
-                  label: (<div onClick={() => setModalOpenCreateProduct(true)}>Adicionar Produto</div>), key: "add-product"
-                },
-              ]}
-            ]
-          }
-        ];
-      }
       setMenuItemsCategoryState(menuItems);
     }
   }
@@ -140,6 +101,14 @@ export default function MenuHome({ user }){
       const menuItems: MenuItem[] = [
         {
           label: "Conta", key: "menu-account", icon: <UserOutlined />, children:[
+            { type: "group", label: "Admin" , children: [
+              {
+                label: (<div onClick={() => setModalOpenCreateCategory(true)}>Adicionar Categoria</div>), key: "add-category"
+              },
+              {
+                label: (<div onClick={() => setModalOpenCreateProduct(true)}>Adicionar Produto</div>), key: "add-product"
+              },
+            ]},
             { type: "group", label: "Conta" , children: [
               { label: (<div onClick={ () => { consultApiService(nav, "PUT", "/deslogar", null); nav.refresh() } }>Deslogar</div>), key:"1" },
             ]}
@@ -212,8 +181,8 @@ export default function MenuHome({ user }){
           </div>
         )
       }
-    <ModalCreateCategory modalOpen={modalOpenCreateCategory} setModalOpen={setModalOpenCreateCategory} updateCategoryPage={getInformationCategory} />
-    <ModalCreateProduct modalOpen={modalOpenCreateProduct} setModalOpen={setModalOpenCreateProduct} updateProductPage={menuSearchField} categorysApi={categoryApi.current} />
+      <ModalCreateCategory modalOpen={modalOpenCreateCategory} setModalOpen={setModalOpenCreateCategory} updateCategoryPage={getInformationCategory} />
+      <ModalCreateProduct modalOpen={modalOpenCreateProduct} setModalOpen={setModalOpenCreateProduct} updateProductPage={menuSearchField} categorysApi={categoryApi.current} />
     </div>
   )
 }
