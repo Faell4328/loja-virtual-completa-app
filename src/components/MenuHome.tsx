@@ -4,9 +4,11 @@ import { consultApiService } from "../service/consultApiService";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { SearchOutlined, UserOutlined } from '@ant-design/icons';
-import ModalCreateCategory from "./modalCreateCategory";
-import ModalCreateProduct from "./modalCreateProduct";
+import ModalCreateProduct from "./admin/ModalCreateProduct";
+import ModalCreateCategory from "./admin/ModalCreateCategory";
 import Image from "next/image";
+import ModalInformationUser from "./userAndAdmin/ModalInformationUser";
+import { useStore } from "../service/useStore";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -29,9 +31,11 @@ interface CategoryApiProps{
 export default function MenuHome({ user }){
   const nav = useRouter();
   const categoryApi = useRef<CategoryApiProps[]>([]);
+  const setUserStore = useStore((state) => state.setUserStore)
 
-  const [modalOpenCreateCategory, setModalOpenCreateCategory] = useState(false);
-  const [modalOpenCreateProduct, setModalOpenCreateProduct] = useState(false);
+  const [ modalOpenCreateCategory, setModalOpenCreateCategory ] = useState(false);
+  const [ modalOpenCreateProduct, setModalOpenCreateProduct ] = useState(false);
+  const [ modalOpenInformationUser, setModalOpenInformationUser ] = useState(false);
 
   const [ menuItemsCategoryState, setMenuItemsCategoryState ] = useState<MenuItem[]>([]);
   const [ menuItemsSeachState, setMenuItemsSeachState ] = useState<AutoCompleteProps['options']>([]);
@@ -95,8 +99,11 @@ export default function MenuHome({ user }){
       const menuItems: MenuItem[] = [
         {
           label: "", key: "menu-account", icon: <UserOutlined />, children:[
+            { type: "group", label: "Informações" , children: [
+              { label: (<div onClick={ () => { setModalOpenInformationUser(true) } }>Alterar Informações Pessoais</div>), key:"1" },
+            ]},
             { type: "group", label: "Conta" , children: [
-              { label: (<div onClick={ () => { consultApiService(nav, "PUT", "/deslogar", null); nav.refresh() } }>Deslogar</div>), key:"1" },
+              { label: (<div onClick={ () => { consultApiService(nav, "PUT", "/deslogar", null); setUserStore(null); nav.push("/login") } }>Deslogar</div>), key:"2" },
             ]}
           ]
         }
@@ -118,8 +125,11 @@ export default function MenuHome({ user }){
                 label: (<Link href="/admin/whatsapp">WhatsApp</Link>), key: "whatsapp"
               },
             ]},
+            { type: "group", label: "Informações" , children: [
+              { label: (<div onClick={ () => { setModalOpenInformationUser(true) } }>Alterar Informações Pessoais</div>), key:"1" },
+            ]},
             { type: "group", label: "Conta" , children: [
-              { label: (<div onClick={ () => { consultApiService(nav, "PUT", "/deslogar", null); nav.refresh() } }>Deslogar</div>), key:"1" },
+              { label: (<div onClick={ () => { consultApiService(nav, "PUT", "/deslogar", null); setUserStore(null); nav.push("/login") } }>Deslogar</div>), key:"1" },
             ]}
           ]
         }
@@ -157,12 +167,12 @@ export default function MenuHome({ user }){
         (
           <div>
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
-              <Menu mode="horizontal" items={menuItemsCategoryState} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
+              <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
               <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
                 <AutoComplete placeholder="Procurar produto" open={openAutoComplete} options={menuItemsSeachState} onSearch={(value) => {if(value!=""){ valueAutoComplete.current = value; setOpenAutoComplete(true)} else{ valueAutoComplete.current = value; setOpenAutoComplete(false)} }} onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)} onBlur={() => setOpenAutoComplete(false)} filterOption={(inputValue: string, option: { value: string }) => productSearch(inputValue, option)}  style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
-              <Menu mode="horizontal" items={menuItemsUserState} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
+              <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
             </div>
             <p>Sua role é OFF</p>
           </div>
@@ -172,12 +182,12 @@ export default function MenuHome({ user }){
         (
           <div>
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
-              <Menu mode="horizontal" items={menuItemsCategoryState} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
+              <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
               <div style={{ width: "50%", display: "flex", justifyContent: "center" }}>
                 <AutoComplete placeholder="Procurar produto" open={openAutoComplete} options={menuItemsSeachState} onSearch={(value) => {if(value!=""){ valueAutoComplete.current = value; setOpenAutoComplete(true)} else{ valueAutoComplete.current = value; setOpenAutoComplete(false)} }} onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)} onBlur={() => setOpenAutoComplete(false)} filterOption={(inputValue: string, option: { value: string }) => productSearch(inputValue, option)}  style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
-              <Menu mode="horizontal" items={menuItemsUserState} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
+              <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
             </div>
             <p>Sua role é User</p>
           </div>
@@ -187,12 +197,12 @@ export default function MenuHome({ user }){
         (
           <div>
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
-              <Menu mode="horizontal" items={menuItemsCategoryState} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
+              <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
               <div style={{ width: "45%", display: "flex", justifyContent: "center" }}>
                 <AutoComplete placeholder="Procurar produto" open={openAutoComplete} options={menuItemsSeachState} onSearch={(value) => {if(value!=""){ valueAutoComplete.current = value; setOpenAutoComplete(true)} else{ valueAutoComplete.current = value; setOpenAutoComplete(false)} }} onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)} onBlur={() => setOpenAutoComplete(false)} filterOption={(inputValue: string, option: { value: string }) => productSearch(inputValue, option)}  style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
-              <Menu mode="horizontal" items={menuItemsUserState} style={{ width: "25%", display: "flex", justifyContent: "center", border: 0 }}/>
+              <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "25%", display: "flex", justifyContent: "center", border: 0 }}/>
             </div>
             <p>Sua role é Admin</p>
           </div>
@@ -200,6 +210,7 @@ export default function MenuHome({ user }){
       }
       <ModalCreateCategory modalOpen={modalOpenCreateCategory} setModalOpen={setModalOpenCreateCategory} updateCategoryPage={getInformationCategory} />
       <ModalCreateProduct modalOpen={modalOpenCreateProduct} setModalOpen={setModalOpenCreateProduct} updateProductPage={menuSearchField} categorysApi={categoryApi.current} />
+      <ModalInformationUser modalOpen={modalOpenInformationUser} setModalOpen={setModalOpenInformationUser} />
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStore } from '../service/useStore';
 import { UserProps } from '../interface/user';
-import MenuHome from '../components/menuHome';
+import MenuHome from '../components/MenuHome';
 
 export default function Home() {
 

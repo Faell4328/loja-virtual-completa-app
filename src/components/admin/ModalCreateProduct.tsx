@@ -1,14 +1,16 @@
 /** @jsxImportSource @emotion/react */
 
 import { Button, Form, Input, InputNumber, MenuProps, Modal, Select, Upload } from "antd";
-import { contentFormStyle } from "../styles/instalacao.style";
+import { contentFormStyle } from "../../styles/instalacao.style";
 import { useRouter } from "next/navigation";
-import { ApiProps } from "../interface/returnApi";
-import { consultApiService } from "../service/consultApiService";
+import { ApiProps } from "../../interface/returnApi";
+import { consultApiService } from "../../service/consultApiService";
 import { RcFile, UploadFile } from "antd/es/upload";
 import { UploadOutlined } from "@ant-design/icons";
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "antd/es/form/Form";
+import { UserProps } from "../../interface/user";
+import { useStore } from "../../service/useStore";
 
 interface FormDataProps{
   name: string;
@@ -40,7 +42,13 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProd
   const [categorysSelect, setCategorySelect] = useState<{ value: string, label: string }[]>([]);
   const [formElement] = useForm();
 
+  const userStore: UserProps | "OFF" | null = useStore((state) => state.userStore);
+
   useEffect(() => {
+    if(userStore && userStore !== "OFF" && userStore.role == "USER"){
+      return;
+    }
+
     const categorys = categorysApi.map((category) => {
       return { value: category.id, label: category.name }
     });

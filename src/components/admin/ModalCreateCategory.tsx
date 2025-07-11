@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
 
 import { Button, Form, Input, Modal } from "antd";
-import { contentFormStyle } from "../styles/instalacao.style";
+import { contentFormStyle } from "../../styles/instalacao.style";
 import { useRouter } from "next/navigation";
-import { ApiProps } from "../interface/returnApi";
-import { consultApiService } from "../service/consultApiService";
+import { ApiProps } from "../../interface/returnApi";
+import { consultApiService } from "../../service/consultApiService";
 import { useForm } from "antd/es/form/Form";
 
 interface FormDataProps{
