@@ -9,6 +9,7 @@ import ModalCreateCategory from "./admin/ModalCreateCategory";
 import Image from "next/image";
 import ModalInformationUser from "./userAndAdmin/ModalInformationUser";
 import { useStore } from "../service/useStore";
+import ModalWhatsapp from "./admin/ModalWhatsapp";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -35,6 +36,7 @@ export default function MenuHome({ user }){
 
   const [ modalOpenCreateCategory, setModalOpenCreateCategory ] = useState(false);
   const [ modalOpenCreateProduct, setModalOpenCreateProduct ] = useState(false);
+  const [ modalOpenWhatsapp, setModalOpenWhatsapp ] = useState(false);
   const [ modalOpenInformationUser, setModalOpenInformationUser ] = useState(false);
 
   const [ menuItemsCategoryState, setMenuItemsCategoryState ] = useState<MenuItem[]>([]);
@@ -103,7 +105,7 @@ export default function MenuHome({ user }){
               { label: (<div onClick={ () => { setModalOpenInformationUser(true) } }>Alterar Informações Pessoais</div>), key:"1" },
             ]},
             { type: "group", label: "Conta" , children: [
-              { label: (<div onClick={ () => { consultApiService(nav, "PUT", "/deslogar", null); setUserStore(null); nav.push("/login") } }>Deslogar</div>), key:"2" },
+              { label: (<div onClick={ () => { consultApiService(nav, "DELETE", "/deslogar", null); setUserStore(null); nav.push("/login") } }>Deslogar</div>), key:"2" },
             ]}
           ]
         }
@@ -122,14 +124,14 @@ export default function MenuHome({ user }){
                 label: (<div onClick={() => setModalOpenCreateProduct(true)}>Adicionar Produto</div>), key: "add-product"
               },
               {
-                label: (<Link href="/admin/whatsapp">WhatsApp</Link>), key: "whatsapp"
+                label: (<div onClick={() => setModalOpenWhatsapp(true)}>WhatsApp</div>), key: "whatsapp"
               },
             ]},
             { type: "group", label: "Informações" , children: [
               { label: (<div onClick={ () => { setModalOpenInformationUser(true) } }>Alterar Informações Pessoais</div>), key:"1" },
             ]},
             { type: "group", label: "Conta" , children: [
-              { label: (<div onClick={ () => { consultApiService(nav, "PUT", "/deslogar", null); setUserStore(null); nav.push("/login") } }>Deslogar</div>), key:"1" },
+              { label: (<div onClick={ () => { consultApiService(nav, "DELETE", "/deslogar", null); setUserStore(null); nav.push("/login") } }>Deslogar</div>), key:"1" },
             ]}
           ]
         }
@@ -210,6 +212,7 @@ export default function MenuHome({ user }){
       }
       <ModalCreateCategory modalOpen={modalOpenCreateCategory} setModalOpen={setModalOpenCreateCategory} updateCategoryPage={getInformationCategory} />
       <ModalCreateProduct modalOpen={modalOpenCreateProduct} setModalOpen={setModalOpenCreateProduct} updateProductPage={menuSearchField} categorysApi={categoryApi.current} />
+      <ModalWhatsapp modalOpen={modalOpenWhatsapp} setModalOpen={setModalOpenWhatsapp} />
       <ModalInformationUser modalOpen={modalOpenInformationUser} setModalOpen={setModalOpenInformationUser} />
     </div>
   )

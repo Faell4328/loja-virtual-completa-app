@@ -45,7 +45,7 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProd
   const userStore: UserProps | "OFF" | null = useStore((state) => state.userStore);
 
   useEffect(() => {
-    if(userStore && userStore !== "OFF" && userStore.role == "USER"){
+    if(userStore && userStore == "OFF"){
       return;
     }
 
