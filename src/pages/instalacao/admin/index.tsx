@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import {  useEffect,useRef,useState } from "react"
-import { Button, Form, Input, Spin } from 'antd';
+import { Button, Form, Input, InputNumber, Spin } from 'antd';
 
 import Image from "next/image";
 import { bodyStyle, containerButtonStyle, containerFormStyle, contentFormStyle, imageStyle } from "../../../styles/instalacao.style";
@@ -86,8 +86,8 @@ export default function Admin(){
                 <Form.Item label="Nome:" name="name" rules={[{ required: true, message: "Campo obrigatório" }]} css={ contentFormStyle} >
                   <Input />
                 </Form.Item>
-                <Form.Item label="Telefone:" name="phone" rules={[{ required: true, message: "Campo obrigatório" }]} css={ contentFormStyle }>
-                  <Input />
+                <Form.Item label="Telefone" name="phone" rules={[{ required: true, message: "Campo obrigatório" }]} style={{ width: "100%" }}>
+                  <InputNumber type="number" controls={false} style={{ width: "100%" }} addonBefore="+55"/>
                 </Form.Item>
                 <Form.Item label="Email:" name="email" rules={[{ type: "email", message: "Email inválido"}, { required: true, message: "Campo obrigatório" }]} css={ contentFormStyle} >
                   <Input />

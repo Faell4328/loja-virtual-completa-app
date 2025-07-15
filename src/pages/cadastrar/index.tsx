@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 
 import { useRouter } from "next/navigation";
-import { Button, Form, Input } from 'antd';
+import { Button, Form, Input, InputNumber } from 'antd';
 
 import Link from "next/link";
 import { consultApiService } from "../../service/consultApiService";
@@ -38,8 +38,8 @@ export default function Cadastrar(){
           <Form.Item label="Nome:" name="name" rules={[{ required: true, message: "Campo obrigatório" }]} style={{ marginTop: 30 }} css={ contentFormStyle } >
             <Input />
           </Form.Item>
-          <Form.Item label="Telefone:" name="phone" rules={[{ required: true, message: "Campo obrigatório" }]} css={ contentFormStyle }>
-            <Input />
+          <Form.Item label="Telefone" name="phone" rules={[{ required: true, message: "Campo obrigatório" }]} style={{ width: "100%" }}>
+            <InputNumber type="number" controls={false} style={{ width: "100%" }} addonBefore="+55"/>
           </Form.Item>
           <Form.Item label="Email:" name="email" rules={[{ type: "email", message: "Email inválido"}, { required: true, message: "Campo obrigatório" }]} css={ contentFormStyle} >
             <Input />

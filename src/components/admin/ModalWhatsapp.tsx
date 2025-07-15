@@ -20,11 +20,9 @@ export default function ModalWhatsapp({ modalOpen, setModalOpen }){
   const userStore: UserProps | "OFF" | null = useStore((state) => state.userStore);
   
   useEffect(() => {
-    if(userStore && userStore == "OFF"){
+    if(userStore == null || userStore == "OFF" || userStore?.role == "USER"){
       return;
     }
-
-    console.log(userStore)
 
     async function consultApi(){
       const apiData = await consultApiService(nav, "GET", "/admin/whatsapp", null);

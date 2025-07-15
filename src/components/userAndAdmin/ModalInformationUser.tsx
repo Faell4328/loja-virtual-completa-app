@@ -12,19 +12,17 @@ import { UserProps } from "../../interface/user";
 import { useStore } from "../../service/useStore";
 
 interface userInformationApiProps{
-  data?:{
-    name: string;
-    phone: string;
-    address?: {
-      description: string;
-      street: string;
-      number: string;
-      neighborhood: string;
-      zipCode: string;
-      city: string;
-      state: string;
-      complement?: string;
-    }
+  name: string;
+  phone: string;
+  address?: {
+    description: string;
+    street: string;
+    number: string;
+    neighborhood: string;
+    zipCode: string;
+    city: string;
+    state: string;
+    complement?: string;
   }
 }
 
@@ -54,29 +52,30 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen }: TypeProp
   const userStore: UserProps | "OFF" | null = useStore((state) => state.userStore);
 
   useEffect(() => {
-    if(userStore && userStore == "OFF"){
+    if(userStore == null || userStore == "OFF"){
       return;
     }
 
     async function consultApi(){
       const returnApi = await consultApiService(nav, "GET", "/usuario", null);
 
-      if(returnApi == null){
+      if(returnApi == null || returnApi?.data == null){
+        console.error("Erro ao consultar os dados pessoais");
         return;
       }
 
-      const userInformation: userInformationApiProps = returnApi.data;
+      const userInformation: userInformationApiProps = returnApi.data as userInformationApiProps;
 
-      if(userInformation.data?.name && userInformation.data?.phone){
-        const { name, phone } = userInformation.data;
+      if(userInformation?.name && userInformation?.phone){
+        const { name, phone } = userInformation;
 
         (name) && formElement.setFieldValue("name", name);
         (phone) && formElement.setFieldValue("phone", phone);
       }
 
-      if(userInformation.data?.address){
+      if(userInformation?.address){
         setRequiredAddressField(true);
-        const { description, zipCode, street, number, neighborhood, city, state, complement } = userInformation.data.address;
+        const { description, zipCode, street, number, neighborhood, city, state, complement } = userInformation.address;
         (description) && formElement.setFieldValue("description", description);
         (zipCode) && formElement.setFieldValue("zipCode", zipCode);
         (street) && formElement.setFieldValue("street", street);

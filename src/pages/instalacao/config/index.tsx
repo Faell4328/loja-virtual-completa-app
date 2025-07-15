@@ -100,7 +100,7 @@ export default function Config(){
           <div style={{ marginBottom: 30, height: "95vh" }}>
             <div css={containerFormStyle}>
               <Form css={formStyle} name="basic" layout="vertical" onFinish={(e) => formSubmit(e)}>
-                <label style={selectImage ? { display: "block", textAlign: "center", marginBottom: 30} : { display: "none" }} >Preview</label>
+                <label style={selectImage ? { display: "block", textAlign: "center", marginBottom: 10} : { display: "none" }} >Preview da Logo</label>
                 <Image width="200" height="200" alt="Imagem do mascote" css={imageStyle} src={robo} />
                 <Form.Item label="Insira o nome da loja" name="name" rules={[{ required: true, message: "Campo obrigatório" }]} css={ contentFormStyle }>
                   <Input />
