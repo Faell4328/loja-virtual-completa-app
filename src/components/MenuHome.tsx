@@ -68,20 +68,6 @@ export default function MenuHome({ user }){
       setMenuItemsCategoryState(menuItems);
     }
   }
-
-  async function menuSearchField(){
-    const returnApi = await consultApiService(nav, "GET", "/produtos", null);
-    
-    if(returnApi && returnApi?.data){
-      let products = returnApi.data as unknown as ProductsProps[];
-      if(products.length > 0){
-        let productsSearch: AutoCompleteProps['options'] = products.map((product) => {
-          return { key: product.id, label: (<div style={{ display: "flex", alignItems: "center" }} key={product.name}><Image src={process.env.NEXT_PUBLIC_URL_SERVER+"/files/product/"+product.imagesProduct[0].imageUrl} alt="Imagem do produto" width={50} height={50} style={{ objectFit: "contain", marginRight: 20 }}/><span style={{ overflowWrap: "break-word", whiteSpace: "normal" }}>{product.name}</span></div>), value: product.name }
-        })
-        setMenuItemsSeachState(productsSearch);
-      }
-    }
-  }
   
   async function menuAccountField(){
     if(user == "OFF"){
@@ -105,7 +91,7 @@ export default function MenuHome({ user }){
               { label: (<div onClick={ () => { setModalOpenInformationUser(true) } }>Alterar Informações Pessoais</div>), key:"1" },
             ]},
             { type: "group", label: "Conta" , children: [
-              { label: (<div onClick={ () => { consultApiService(nav, "DELETE", "/deslogar", null); setUserStore(null); nav.push("/login") } }>Deslogar</div>), key:"2" },
+              { label: (<div onClick={ () => { consultApiService(nav, "DELETE", "/deslogar", null); setUserStore(null); nav.refresh() } }>Deslogar</div>), key:"2" },
             ]}
           ]
         }
@@ -131,7 +117,7 @@ export default function MenuHome({ user }){
               { label: (<div onClick={ () => { setModalOpenInformationUser(true) } }>Alterar Informações Pessoais</div>), key:"1" },
             ]},
             { type: "group", label: "Conta" , children: [
-              { label: (<div onClick={ () => { consultApiService(nav, "DELETE", "/deslogar", null); setUserStore(null); nav.push("/login") } }>Deslogar</div>), key:"1" },
+              { label: (<div onClick={ () => { consultApiService(nav, "DELETE", "/deslogar", null); setUserStore(null); nav.refresh() } }>Deslogar</div>), key:"1" },
             ]}
           ]
         }
@@ -147,20 +133,28 @@ export default function MenuHome({ user }){
   
     async function index(){
       getInformationCategory();
-      menuSearchField();
       menuAccountField();
+
+      await consultApiService(nav, "GET", "/produtos", null);
     }
   
     index();
   
   }, []);
 
-  function productSearch(inputValue: string, option: { value: string }){
-    const label = option?.value;
-    if (typeof label === 'string') {
-      return label.toLowerCase().includes(inputValue.toLowerCase());
+  async function productSearch(inputValue: string){
+    console.log(inputValue);
+    const returnApi = await consultApiService(nav, "GET", `/produto/procurar/${inputValue}`, null);
+    
+    if(returnApi && returnApi?.data){
+      let products = returnApi.data as unknown as ProductsProps[];
+      if(products.length > 0){
+        let productsSearch: AutoCompleteProps['options'] = products.map((product) => {
+          return { key: product.id, label: (<div style={{ display: "flex", alignItems: "center" }} key={product.name}><Image src={process.env.NEXT_PUBLIC_URL_SERVER+"/files/product/"+product.imagesProduct[0].imageUrl} alt="Imagem do produto" width={50} height={50} style={{ objectFit: "contain", marginRight: 20 }}/><span style={{ overflowWrap: "break-word", whiteSpace: "normal" }}>{product.name}</span></div>), value: product.name }
+        })
+        setMenuItemsSeachState(productsSearch);
+      }
     }
-    return false;
   }
 
   return(
@@ -171,7 +165,25 @@ export default function MenuHome({ user }){
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
               <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
               <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-                <AutoComplete placeholder="Procurar produto" open={openAutoComplete} options={menuItemsSeachState} onSearch={(value) => {if(value!=""){ valueAutoComplete.current = value; setOpenAutoComplete(true)} else{ valueAutoComplete.current = value; setOpenAutoComplete(false)} }} onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)} onBlur={() => setOpenAutoComplete(false)} filterOption={(inputValue: string, option: { value: string }) => productSearch(inputValue, option)}  style={{ width: "90%", height: "80%"}}/>
+                <AutoComplete
+                  placeholder="Procurar produto"
+                  open={openAutoComplete}
+                  options={menuItemsSeachState}
+                  onSearch={
+                    (value) => {
+                      if(value!=""){
+                        valueAutoComplete.current = value;
+                        setOpenAutoComplete(true);
+                        productSearch(value);
+                      }
+                      else{
+                        valueAutoComplete.current = value;
+                        setOpenAutoComplete(false)}
+                      }
+                    }
+                  onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)}
+                  onBlur={() => setOpenAutoComplete(false)}
+                  style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
@@ -186,7 +198,25 @@ export default function MenuHome({ user }){
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
               <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
               <div style={{ width: "50%", display: "flex", justifyContent: "center" }}>
-                <AutoComplete placeholder="Procurar produto" open={openAutoComplete} options={menuItemsSeachState} onSearch={(value) => {if(value!=""){ valueAutoComplete.current = value; setOpenAutoComplete(true)} else{ valueAutoComplete.current = value; setOpenAutoComplete(false)} }} onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)} onBlur={() => setOpenAutoComplete(false)} filterOption={(inputValue: string, option: { value: string }) => productSearch(inputValue, option)}  style={{ width: "90%", height: "80%"}}/>
+                <AutoComplete
+                  placeholder="Procurar produto"
+                  open={openAutoComplete}
+                  options={menuItemsSeachState}
+                  onSearch={
+                    (value) => {
+                      if(value!=""){
+                        valueAutoComplete.current = value;
+                        setOpenAutoComplete(true);
+                        productSearch(value);
+                      }
+                      else{
+                        valueAutoComplete.current = value;
+                        setOpenAutoComplete(false)}
+                      }
+                    }
+                  onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)}
+                  onBlur={() => setOpenAutoComplete(false)}
+                  style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
@@ -201,7 +231,25 @@ export default function MenuHome({ user }){
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
               <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
               <div style={{ width: "45%", display: "flex", justifyContent: "center" }}>
-                <AutoComplete placeholder="Procurar produto" open={openAutoComplete} options={menuItemsSeachState} onSearch={(value) => {if(value!=""){ valueAutoComplete.current = value; setOpenAutoComplete(true)} else{ valueAutoComplete.current = value; setOpenAutoComplete(false)} }} onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)} onBlur={() => setOpenAutoComplete(false)} filterOption={(inputValue: string, option: { value: string }) => productSearch(inputValue, option)}  style={{ width: "90%", height: "80%"}}/>
+                <AutoComplete
+                  placeholder="Procurar produto"
+                  open={openAutoComplete}
+                  options={menuItemsSeachState}
+                  onSearch={
+                    (value) => {
+                      if(value!=""){
+                        valueAutoComplete.current = value;
+                        setOpenAutoComplete(true);
+                        productSearch(value);
+                      }
+                      else{
+                        valueAutoComplete.current = value;
+                        setOpenAutoComplete(false)}
+                      }
+                    }
+                  onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)}
+                  onBlur={() => setOpenAutoComplete(false)}
+                  style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "25%", display: "flex", justifyContent: "center", border: 0 }}/>
@@ -211,7 +259,7 @@ export default function MenuHome({ user }){
         )
       }
       <ModalCreateCategory modalOpen={modalOpenCreateCategory} setModalOpen={setModalOpenCreateCategory} updateCategoryPage={getInformationCategory} />
-      <ModalCreateProduct modalOpen={modalOpenCreateProduct} setModalOpen={setModalOpenCreateProduct} updateProductPage={menuSearchField} categorysApi={categoryApi.current} />
+      <ModalCreateProduct modalOpen={modalOpenCreateProduct} setModalOpen={setModalOpenCreateProduct} categorysApi={categoryApi.current} />
       <ModalWhatsapp modalOpen={modalOpenWhatsapp} setModalOpen={setModalOpenWhatsapp} />
       <ModalInformationUser modalOpen={modalOpenInformationUser} setModalOpen={setModalOpenInformationUser} />
     </div>

@@ -34,11 +34,10 @@ interface CategoryApiProps{
 interface TypeProps{
   modalOpen: boolean;
   setModalOpen: (value: boolean) => void;
-  updateProductPage: () => void;
   categorysApi: CategoryApiProps[];
 }
 
-export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProductPage, categorysApi }: TypeProps){
+export default function ModalCreateProduct({ modalOpen, setModalOpen, categorysApi }: TypeProps){
   const nav = useRouter();
   const [categorysSelect, setCategorySelect] = useState<{ value: string, label: string }[]>([]);
   const [formElement] = useForm();
@@ -101,7 +100,6 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProd
 
     if(api !== null && api.ok !== undefined && api.error == undefined){
       formElement.resetFields();
-      updateProductPage();
     }
 
     return;
@@ -130,7 +128,7 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProd
             <Radio.Group style={{ display: "flex", justifyContent: "space-between" }}>
               <Radio value="PROMOTION">Promoção</Radio>
               <Radio value="NEW">Novo</Radio>
-              <Radio value="REMAINING">Restante</Radio>
+              <Radio value="HIGHLIGHTS">Destaques</Radio>
             </Radio.Group>
           </Form.Item>
           <Form.List name="options">
