@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 
-import { Button, Form, Input, InputNumber, MenuProps, Modal, Select, Upload } from "antd";
+import { Button, Form, Input, InputNumber, MenuProps, Modal, Radio, Select, Upload } from "antd";
 import { contentFormStyle } from "../../styles/instalacao.style";
 import { useRouter } from "next/navigation";
 import { ApiProps } from "../../interface/returnApi";
@@ -18,6 +18,7 @@ interface FormDataProps{
   promotionPrice: string;
   categoryId: string;
   description?: string;
+  homeSession: string;
   options: any;
   quantity: string | string[];
   files:{
@@ -57,29 +58,31 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProd
 
   async function formSubmit(data: FormDataProps){
 
-    console.log(data)
-
     const form = new FormData();
+    const { name, originalPrice, promotionPrice, categoryId, description, homeSession, options, quantity } = formElement.getFieldsValue();
 
-    form.append("name", data.name);
-    form.append("originalPrice", data.originalPrice);
-    if(data.promotionPrice == undefined){
+    (name) && form.append("name", name);
+    (originalPrice) && form.append("originalPrice", originalPrice);
+    if(promotionPrice == undefined){
       form.append("promotionPrice", "0");
     }
     else{
-      form.append("promotionPrice", data.promotionPrice);
+      form.append("promotionPrice", promotionPrice);
     }
-    form.append("categoryId", data.categoryId);
-    form.append("description", data.description);
+    (categoryId) && form.append("categoryId", categoryId);
+    (description) && form.append("description", description);
+    (homeSession) && form.append("homeSession", homeSession);
+    
 
-    if(data.options && data.quantity){
-      const option = data.options.map((item) => {
+    if(options && quantity){
+      const option = options.map((item) => {
         return item.option;
       })
   
       const quantity = data.options.map((item) => {
         return item.quantity;
       })
+      
       form.append("option", option);
       form.append("quantity", quantity);
     }
@@ -122,6 +125,13 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, updateProd
           </Form.Item>
           <Form.Item label="Descrição:" name="description" style={{ width: "100%" }} css={ contentFormStyle}>
             <Input />
+          </Form.Item>
+          <Form.Item label="Onde será exibido na página home" name="homeSession" rules={[{ required: true, message: "Campo obrigatório" }]}>
+            <Radio.Group style={{ display: "flex", justifyContent: "space-between" }}>
+              <Radio value="PROMOTION">Promoção</Radio>
+              <Radio value="NEW">Novo</Radio>
+              <Radio value="REMAINING">Restante</Radio>
+            </Radio.Group>
           </Form.Item>
           <Form.List name="options">
             {(fields, { add, remove }) => (

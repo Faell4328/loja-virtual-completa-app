@@ -18,8 +18,9 @@ export default function ModalCreateCategory({ modalOpen, setModalOpen, updateCat
   async function formSubmit(data: FormDataProps){
 
     const form = new FormData();
+    const { name } = formElement.getFieldsValue();
 
-    form.append("name", data.name);
+    (name) && form.append("name", name);
 
     const api: ApiProps | null = await consultApiService(nav, "POST", "/admin/categoria", form);
 

@@ -157,13 +157,13 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen }: TypeProp
     if(requiredAddressField){
       const { description, zipCode, street, number, neighborhood, city, state, complement } = formElement.getFieldsValue();
 
-      form.append("description", description);
-      form.append("zipCode", zipCode);
-      form.append("street", street);
-      form.append("number", number);
-      form.append("neighborhood", neighborhood);
-      form.append("city", city);
-      form.append("state", state);
+      (description) && form.append("description", description);
+      (zipCode) && form.append("zipCode", zipCode);
+      (street) && form.append("street", street);
+      (number) && form.append("number", number);
+      (neighborhood) && form.append("neighborhood", neighborhood);
+      (city) && form.append("city", city);
+      (state) && form.append("state", state);
       (complement) && form.append("complement", complement);
     }
 
