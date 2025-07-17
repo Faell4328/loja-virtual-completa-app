@@ -20,7 +20,7 @@ interface FormDataProps{
   description?: string;
   homeSession: string;
   options: any;
-  quantity: string | string[];
+  quantitys: string | string[];
   files:{
     fileList: UploadFile<RcFile>[];
   }
@@ -61,7 +61,7 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, categorysA
   async function formSubmit(data: FormDataProps){
 
     const form = new FormData();
-    const { name, originalPrice, promotionPrice, categoryId, description, homeSession, options, quantity } = formElement.getFieldsValue();
+    const { name, originalPrice, promotionPrice, categoryId, description, homeSession, options, quantitys } = formElement.getFieldsValue();
 
     (name) && form.append("name", name);
     (originalPrice) && form.append("originalPrice", originalPrice);
@@ -75,18 +75,18 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, categorysA
     (description) && form.append("description", description);
     (homeSession) && form.append("homeSession", homeSession);
 
-    if(options && quantity){
-      const option = options.map((item) => {
-        return item.option;
-      })
-  
-      const quantity = data.options.map((item) => {
-        return item.quantity;
-      })
-      
-      form.append("option", option);
-      form.append("quantity", quantity);
-    }
+    
+    options.map((item) => {
+      if(item.options){
+        form.append("option", item.options);
+      }
+    })
+
+    options.map((item) => {
+      if(item.quantitys){
+        form.append("quantity", item.quantitys);
+      }
+    })
 
     if(data.files){
       const files = data.files.fileList.map((file) => {
@@ -150,11 +150,11 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, categorysA
                 {fields.map(({ key, name, ...restField }) => (
                   <div key={key} style={{ border: '1px solid #eee', width: '100%', borderRadius: 20, padding: 20, boxSizing: 'border-box', marginBottom: 20 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Form.Item {...restField} name={[name, 'option']} label="Opção" style={{ width: '45%' }}>
+                      <Form.Item {...restField} name={[name, 'options']} label="Opção" style={{ width: '45%' }}>
                         <Input />
                       </Form.Item>
 
-                      <Form.Item {...restField} name={[name, 'quantity']} label="Quantidade" style={{ width: '45%' }} >
+                      <Form.Item {...restField} name={[name, 'quantitys']} label="Quantidade" style={{ width: '45%' }} >
                         <Input type="number" />
                       </Form.Item>
                     </div>
