@@ -10,6 +10,7 @@ import Image from "next/image";
 import ModalInformationUser from "./userAndAdmin/ModalInformationUser";
 import { useStore } from "../service/useStore";
 import ModalWhatsapp from "./admin/ModalWhatsapp";
+import toast from "react-hot-toast";
 
 type MenuItem = Required<MenuProps>["items"][number];
 
@@ -29,7 +30,7 @@ interface CategoryApiProps{
   name: string;
 }
 
-export default function MenuHome({ user }){
+export default function MenuHome({ user, updateProductsOnSale, updateProductsInNew, updateFeaturedProducts }){
   const nav = useRouter();
   const categoryApi = useRef<CategoryApiProps[]>([]);
   const setUserStore = useStore((state) => state.setUserStore)
@@ -43,7 +44,8 @@ export default function MenuHome({ user }){
   const [ menuItemsSeachState, setMenuItemsSeachState ] = useState<AutoCompleteProps['options']>([]);
   const [ menuItemsUserState, setMenuItemsUserState ] = useState<MenuItem[]>([]);
 
-  const valueAutoComplete = useRef("");
+  const valueAutoCompleteSelected = useRef<{key: string; value: string} | null>(null)
+  const valueAutoCompleteTyped = useRef<string>("");
   const [ openAutoComplete, setOpenAutoComplete ] = useState(false);
 
   async function getInformationCategory(){
@@ -51,8 +53,8 @@ export default function MenuHome({ user }){
     
     if(dataCategories?.data){
       categoryApi.current = dataCategories.data as unknown as CategoryApiProps[];
-      const menuCategory = categoryApi.current.map((item) => {
-        return { label: (<Link href={`/categoria/${item.id}`}>{item.name}</Link>), key: item.id }
+      const menuCategory = categoryApi.current.map((item, indice) => {
+        return { label: (<Link key={indice} href={`/categoria/${item.id}`}>{item.name}</Link>), key: item.id }
       });
 
       let menuItems: MenuItem[] = [];
@@ -134,8 +136,6 @@ export default function MenuHome({ user }){
     async function index(){
       getInformationCategory();
       menuAccountField();
-
-      await consultApiService(nav, "GET", "/produtos", null);
     }
   
     index();
@@ -149,7 +149,7 @@ export default function MenuHome({ user }){
     if(returnApi && returnApi?.data){
       let products = returnApi.data as unknown as ProductsProps[];
       if(products.length > 0){
-        let productsSearch: AutoCompleteProps['options'] = products.map((product) => {
+        let productsSearch: AutoCompleteProps['options'] = products.map((product, indice) => {
           return { key: product.id, label: (<div style={{ display: "flex", alignItems: "center" }} key={product.name}><Image src={process.env.NEXT_PUBLIC_URL_SERVER+"/files/product/"+product.imagesProduct[0].imageUrl} alt="Imagem do produto" width={50} height={50} style={{ objectFit: "contain", marginRight: 20 }}/><span style={{ overflowWrap: "break-word", whiteSpace: "normal" }}>{product.name}</span></div>), value: product.name }
         })
         setMenuItemsSeachState(productsSearch);
@@ -172,23 +172,24 @@ export default function MenuHome({ user }){
                   onSearch={
                     (value) => {
                       if(value!=""){
-                        valueAutoComplete.current = value;
+                        valueAutoCompleteTyped.current = value;
+                        valueAutoCompleteSelected.current = null;
                         setOpenAutoComplete(true);
                         productSearch(value);
                       }
                       else{
-                        valueAutoComplete.current = value;
+                        valueAutoCompleteTyped.current = value;
+                        valueAutoCompleteSelected.current = null;
                         setOpenAutoComplete(false)}
                       }
                     }
-                  onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)}
+                  onClick={() => valueAutoCompleteTyped.current !== "" && setOpenAutoComplete(true)}
                   onBlur={() => setOpenAutoComplete(false)}
                   style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
             </div>
-            <p>Sua role é OFF</p>
           </div>
         )
       }
@@ -205,23 +206,24 @@ export default function MenuHome({ user }){
                   onSearch={
                     (value) => {
                       if(value!=""){
-                        valueAutoComplete.current = value;
+                        valueAutoCompleteTyped.current = value;
+                        valueAutoCompleteSelected.current = null;
                         setOpenAutoComplete(true);
                         productSearch(value);
                       }
                       else{
-                        valueAutoComplete.current = value;
+                        valueAutoCompleteTyped.current = value;
+                        valueAutoCompleteSelected.current = null;
                         setOpenAutoComplete(false)}
                       }
                     }
-                  onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)}
+                  onClick={() => valueAutoCompleteTyped.current !== "" && setOpenAutoComplete(true)}
                   onBlur={() => setOpenAutoComplete(false)}
                   style={{ width: "90%", height: "80%"}}/>
                 <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
             </div>
-            <p>Sua role é User</p>
           </div>
         )
       }
@@ -238,28 +240,30 @@ export default function MenuHome({ user }){
                   onSearch={
                     (value) => {
                       if(value!=""){
-                        valueAutoComplete.current = value;
+                        valueAutoCompleteTyped.current = value;
+                        valueAutoCompleteSelected.current = null;
                         setOpenAutoComplete(true);
                         productSearch(value);
                       }
                       else{
-                        valueAutoComplete.current = value;
+                        valueAutoCompleteTyped.current = value;
+                        valueAutoCompleteSelected.current = null;
                         setOpenAutoComplete(false)}
                       }
                     }
-                  onClick={() => valueAutoComplete.current !== "" && setOpenAutoComplete(true)}
+                  onClick={() => valueAutoCompleteTyped.current !== "" && setOpenAutoComplete(true)}
                   onBlur={() => setOpenAutoComplete(false)}
+                  onSelect={(value, option: { key: string; value: string }) => { valueAutoCompleteSelected.current = option}}
                   style={{ width: "90%", height: "80%"}}/>
-                <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
+                <Button type="primary" icon={<SearchOutlined/>} onClick={() => { (valueAutoCompleteSelected.current == null) ? toast.error("Selecione algum produto antes de pesquisar") : nav.push(`/produto/${valueAutoCompleteSelected.current.key}`) }} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "25%", display: "flex", justifyContent: "center", border: 0 }}/>
             </div>
-            <p>Sua role é Admin</p>
           </div>
         )
       }
       <ModalCreateCategory modalOpen={modalOpenCreateCategory} setModalOpen={setModalOpenCreateCategory} updateCategoryPage={getInformationCategory} />
-      <ModalCreateProduct modalOpen={modalOpenCreateProduct} setModalOpen={setModalOpenCreateProduct} categorysApi={categoryApi.current} />
+      <ModalCreateProduct modalOpen={modalOpenCreateProduct} setModalOpen={setModalOpenCreateProduct} categorysApi={categoryApi.current} updateProductsOnSale={updateProductsOnSale} updateProductsInNew={updateProductsInNew} updateFeaturedProducts={updateFeaturedProducts} />
       <ModalWhatsapp modalOpen={modalOpenWhatsapp} setModalOpen={setModalOpenWhatsapp} />
       <ModalInformationUser modalOpen={modalOpenInformationUser} setModalOpen={setModalOpenInformationUser} />
     </div>

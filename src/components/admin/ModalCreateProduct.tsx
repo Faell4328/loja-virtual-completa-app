@@ -35,9 +35,12 @@ interface TypeProps{
   modalOpen: boolean;
   setModalOpen: (value: boolean) => void;
   categorysApi: CategoryApiProps[];
+  updateProductsOnSale: () => void;
+  updateProductsInNew: () => void;
+  updateFeaturedProducts: () => void;
 }
 
-export default function ModalCreateProduct({ modalOpen, setModalOpen, categorysApi }: TypeProps){
+export default function ModalCreateProduct({ modalOpen, setModalOpen, categorysApi, updateProductsOnSale, updateProductsInNew, updateFeaturedProducts }: TypeProps){
   const nav = useRouter();
   const [categorysSelect, setCategorySelect] = useState<{ value: string, label: string }[]>([]);
   const [formElement] = useForm();
@@ -71,7 +74,6 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, categorysA
     (categoryId) && form.append("categoryId", categoryId);
     (description) && form.append("description", description);
     (homeSession) && form.append("homeSession", homeSession);
-    
 
     if(options && quantity){
       const option = options.map((item) => {
@@ -100,6 +102,16 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, categorysA
 
     if(api !== null && api.ok !== undefined && api.error == undefined){
       formElement.resetFields();
+    }
+
+    if(homeSession == "PROMOTION"){
+      updateProductsOnSale()
+    }
+    else if(homeSession == "NEW"){
+      updateProductsInNew()
+    }
+    else if(homeSession == "HIGHLIGHTS"){
+      updateFeaturedProducts()
     }
 
     return;
