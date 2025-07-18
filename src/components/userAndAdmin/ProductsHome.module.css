@@ -1,7 +1,7 @@
 .product_field{
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  width: 95%;
+  width: 96%;
   border-bottom: 1px solid "#999";
   margin: auto;
   cursor: pointer;

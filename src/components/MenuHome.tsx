@@ -164,7 +164,7 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
           <div>
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
               <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
-              <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+              <div style={{ width: "45%", display: "flex", justifyContent: "center" }}>
                 <AutoComplete
                   placeholder="Procurar produto"
                   open={openAutoComplete}
@@ -185,8 +185,9 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
                     }
                   onClick={() => valueAutoCompleteTyped.current !== "" && setOpenAutoComplete(true)}
                   onBlur={() => setOpenAutoComplete(false)}
+                  onSelect={(value, option: { key: string; value: string }) => { valueAutoCompleteSelected.current = option}}
                   style={{ width: "90%", height: "80%"}}/>
-                <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
+                <Button type="primary" icon={<SearchOutlined/>} onClick={() => { (valueAutoCompleteSelected.current == null) ? toast.error("Selecione algum produto antes de pesquisar") : nav.push(`/produto/${valueAutoCompleteSelected.current.key}`) }} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
             </div>
@@ -198,7 +199,7 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
           <div>
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
               <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
-              <div style={{ width: "50%", display: "flex", justifyContent: "center" }}>
+              <div style={{ width: "45%", display: "flex", justifyContent: "center" }}>
                 <AutoComplete
                   placeholder="Procurar produto"
                   open={openAutoComplete}
@@ -219,8 +220,9 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
                     }
                   onClick={() => valueAutoCompleteTyped.current !== "" && setOpenAutoComplete(true)}
                   onBlur={() => setOpenAutoComplete(false)}
+                  onSelect={(value, option: { key: string; value: string }) => { valueAutoCompleteSelected.current = option}}
                   style={{ width: "90%", height: "80%"}}/>
-                <Button type="primary" icon={<SearchOutlined/>} onClick={() => console.log("Clicou para pesquisar")} style={{ height: "80%" }} />
+                <Button type="primary" icon={<SearchOutlined/>} onClick={() => { (valueAutoCompleteSelected.current == null) ? toast.error("Selecione algum produto antes de pesquisar") : nav.push(`/produto/${valueAutoCompleteSelected.current.key}`) }} style={{ height: "80%" }} />
               </div>
               <Menu mode="horizontal" items={menuItemsUserState} selectable={false} style={{ width: "20%", display: "flex", justifyContent: "center", border: 0 }}/>
             </div>

@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import { UserProps } from "../../interface/user";
 import { useStore } from "../../service/useStore";
+import TextArea from "antd/es/input/TextArea";
 
 interface FormDataProps{
   name: string;
@@ -125,16 +126,16 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, categorysA
             <Input />
           </Form.Item>
           <Form.Item label="Valor:" name="originalPrice" rules={[{ required: true, message: "Campo obrigatório" }]} style={{ width: "100%" }} css={ contentFormStyle}>
-            <InputNumber type="number" style={{ width: "100%" }} addonBefore="R$"/>
+            <InputNumber type="number" controls={false} style={{ width: "100%" }} addonBefore="R$"/>
           </Form.Item>
           <Form.Item label="Valor promoção:" name="promotionPrice" style={{ width: "100%" }} css={ contentFormStyle}>
-            <InputNumber type="number" style={{ width: "100%" }} addonBefore="R$"/>
+            <InputNumber type="number" controls={false} style={{ width: "100%" }} addonBefore="R$"/>
           </Form.Item>
           <Form.Item label="Categoria:" name="categoryId" rules={[{ required: true, message: "Campo obrigatório" }]} style={{ width: "100%" }} css={ contentFormStyle}>
             <Select options={categorysSelect} />
           </Form.Item>
           <Form.Item label="Descrição:" name="description" style={{ width: "100%" }} css={ contentFormStyle}>
-            <Input />
+            <TextArea />
           </Form.Item>
           <Form.Item label="Onde será exibido na página home" name="homeSession" rules={[{ required: true, message: "Campo obrigatório" }]}>
             <Radio.Group style={{ display: "flex", justifyContent: "space-between" }}>
