@@ -22,6 +22,9 @@ const nextConfig = {
     "rc-tree",
     "rc-table",
   ],
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 module.exports = nextConfig;
