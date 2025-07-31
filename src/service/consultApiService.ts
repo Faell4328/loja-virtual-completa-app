@@ -8,16 +8,27 @@ interface ReturnApiProps{
   data: unknown | null;
 }
 
-export async function consultApiService(nav: AppRouterInstance, method: "GET" | "POST" | "PUT" | "DELETE", router: string, formData: FormData | null){
+export async function consultApiService(nav: AppRouterInstance, method: "GET" | "POST" | "PUT" | "DELETE", router: string, isJson: boolean, formData: any){
   let returnApi;
+
+  const headers: HeadersInit = {};
+
+  if(isJson == true){
+    headers["Content-Type"] = "application/json";
+  }
+
+  const fetchConfig: RequestInit = {
+    method,
+    headers,
+    credentials: "include"
+  };
+
+  if(formData !== null){
+    fetchConfig.body = formData;
+  }
+
   try{
-    returnApi = await fetch(process.env.NEXT_PUBLIC_URL_SERVER+router,
-      {
-        method,
-        body: formData,
-        credentials: "include"
-      }
-    );
+    returnApi = await fetch(process.env.NEXT_PUBLIC_URL_SERVER+router, fetchConfig);
   }
   catch(error){
     toast.error("Erro ao consultar API (#1)");

@@ -30,7 +30,7 @@ export default function Config(){
 
   useEffect(() => {
     async function consultApi(){
-      const returnApi = await consultApiService(nav, "GET", "/", null);
+      const returnApi = await consultApiService(nav, "GET", "/", null, null);
       apiConsulted.current = true;
       if(returnApi?.redirect != "/instalacao/config"){
         nav.push("/");
@@ -67,7 +67,7 @@ export default function Config(){
     form.append("name", data.name);
     form.append("file", data.file.file.originFileObj);
 
-    consultApiService(nav, "POST", "/instalacao/config", form);
+    consultApiService(nav, "POST", "/instalacao/config", false, form);
     return;
   }
 

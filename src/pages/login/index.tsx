@@ -22,12 +22,12 @@ export default function Login(){
 
   async function formSubmit(data: FormDataProps){
 
-    const form = new FormData();
+    const form = {
+      "email": data.email,
+      "password": data.password
+    }
 
-    form.append("email", data.email);
-    form.append("password", data.password);
-
-    const api: ApiProps | null = await consultApiService(nav, "POST", "/login", form);
+    const api: ApiProps | null = await consultApiService(nav, "POST", "/login", true, JSON.stringify(form));
 
     if(api !== null && api.data !== undefined && api.data !== null){
       setUserStore(api.data as unknown as UserProps);

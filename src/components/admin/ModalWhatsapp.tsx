@@ -25,7 +25,7 @@ export default function ModalWhatsapp({ modalOpen, setModalOpen }){
     }
 
     async function consultApi(){
-      const apiData = await consultApiService(nav, "GET", "/admin/whatsapp", null);
+      const apiData = await consultApiService(nav, "GET", "/admin/whatsapp", false, null);
       console.log("WhatsApp")
       if(apiData !== undefined && apiData !== null){
         if(apiData.data == "Whatsapp não conectado"){
@@ -39,35 +39,128 @@ export default function ModalWhatsapp({ modalOpen, setModalOpen }){
     }
 
     consultApi();
-    obterQrCode()
+    obterQrCode();
   }, []);
 
   function obterQrCode(){
-    const eventSource = new EventSource(process.env.NEXT_PUBLIC_URL_SERVER+"/admin/whatsapp/qr");
-    eventSource.onmessage = (event) => {
-      if(event.data.toString() === '"Pronto"'){
-        setWhatsappConnected(true);
-        return;
-      }
-      try{
-        const imageBase64 = event.data;
-        setQrCode(imageBase64);
-      }
-      catch(error){
-        console.error('Erro: '+ error);
-      }
-    };
+    fetchEventSource('http://192.168.100.117:5000/admin/whatsapp/qr', {
+      headers: {
+        Authorization: 'Bearer token_aqui'
+      },
+      withCredentials: true,
+      onMessage: (data, eventType) => {
+        console.log(`Evento: ${eventType}`);
+        console.log(`Dados recebidos: ${data}`);
 
-    eventSource.onerror = (error) => {
-      console.error('Erro: '+ error);
-      eventSource.close();
-    }
-
-    return () => {
-      eventSource.close();
-    }
+        if (data === '"Pronto"') {
+          setWhatsappConnected(true);
+        } else {
+          setQrCode(data); // base64
+        }
+      },
+      onError: (err) => {
+        console.error('Erro no SSE:', err);
+      }
+    });
   }
 
+  // function obterQrCode(){
+  //   const eventSource = new EventSource(process.env.NEXT_PUBLIC_URL_SERVER+"/admin/whatsapp/qr");
+  //   eventSource.onmessage = (event) => {
+  //     if(event.data.toString() === '"Pronto"'){
+  //       setWhatsappConnected(true);
+  //       return;
+  //     }
+  //     try{
+  //       const imageBase64 = event.data;
+  //       setQrCode(imageBase64);
+  //     }
+  //     catch(error){
+  //       console.error('Erro: '+ error);
+  //     }
+  //   };
+
+  //   eventSource.onerror = (error) => {
+  //     console.error('Erro: '+ error);
+  //     eventSource.close();
+  //   }
+
+  //   return () => {
+  //     eventSource.close();
+  //   }
+  // }
+
+  function fetchEventSource(url: string, options){
+    console.log("Chamou o obter qr code");
+    fetch(process.env.NEXT_PUBLIC_URL_SERVER+"/admin/whatsapp/qr", { method: "GET", credentials: "include" })
+      .then(async response => {
+        // Verifica se a resposta foi ok e tem corpo (stream)
+        if (!response.ok || !response.body) {
+          // Se não, lança erro para cair no catch
+          throw new Error(`Erro HTTP: ${response.status}`);
+        }
+
+        // Obtém um leitor da stream de resposta (ReadableStreamDefaultReader)
+        const reader = response.body.getReader();
+
+        // Usamos TextDecoder para converter bytes em string UTF-8
+        const decoder = new TextDecoder('utf-8');
+
+        // Buffer para acumular os dados recebidos até formar linhas completas
+        let buffer = '';
+
+        // Loop infinito para ler dados da stream conforme chegam
+        while (true) {
+          // Lê o próximo chunk da stream (await porque é assíncrono)
+          const { value, done } = await reader.read();
+
+          // Se chegou ao fim da stream, sai do loop
+          if (done) break;
+
+          // Decodifica os bytes do chunk para string e adiciona no buffer
+          buffer += decoder.decode(value, { stream: true });
+
+          // Divide o buffer em linhas pelo caractere \n
+          let lines = buffer.split('\n');
+
+          // Remove a última linha do array e mantém no buffer (pode ser linha incompleta)
+          buffer = lines.pop() || '';
+
+          // Variáveis para armazenar o tipo do evento e os dados lidos
+          let eventType = 'message';  // Padrão SSE: evento 'message'
+          let data = '';
+
+          // Itera por cada linha para interpretar o formato SSE
+          for (const line of lines) {
+            const trimmed = line.trim();  // Remove espaços no início/fim
+
+            // Linha vazia indica final de um evento SSE
+            if (trimmed === '') {
+              // Se já temos dados acumulados, disparar callback onMessage
+              if (data) {
+                options.onMessage(data.trim(), eventType);
+                data = '';          // Reseta dados para próximo evento
+                eventType = 'message';  // Reseta tipo do evento
+              }
+              continue;  // Pula para próxima linha
+            }
+
+            // Linha que define o tipo do evento SSE (ex: event: custom)
+            if (trimmed.startsWith('event:')) {
+              eventType = trimmed.slice(6).trim();  // Extrai o valor depois de 'event:'
+            }
+            // Linha que adiciona dados ao evento SSE (pode ter múltiplas linhas data:)
+            else if (trimmed.startsWith('data:')) {
+              data += trimmed.slice(5).trim() + '\n';  // Acumula dados (inclui nova linha)
+            }
+            // Outras linhas ignoradas (podem ser comments ou outras diretivas SSE)
+          }
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      })
+  }
 
   return(
     <>

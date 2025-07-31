@@ -3,10 +3,10 @@ import { Card, Divider, Spin } from "antd";
 import { LoadingOutlined } from '@ant-design/icons';
 import Image from "next/image";
 
-import style from "./ProductsHome.module.css";
 import Meta from "antd/es/card/Meta";
 import Link from "next/link";
 
+import style from "./ProductsHome.module.css";
 interface ProductProps{
   id: string;
   imagesProduct: [

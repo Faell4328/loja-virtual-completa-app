@@ -18,7 +18,7 @@ export default function ConfirmacaoEmail(){
   
   useEffect(() => {
     async function consultApi(){
-      const apiData = await consultApiService(nav, "PUT", `/confirmacao/${hash}`, null);
+      const apiData = await consultApiService(nav, "PUT", `/confirmacao/${hash}`, null, null);
       if(apiData !== undefined && apiData !== null){
         console.log(apiData);
         if(apiData.error == null){

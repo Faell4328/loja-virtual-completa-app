@@ -99,7 +99,7 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen, categorysA
       });
     }
 
-    const api: ApiProps | null = await consultApiService(nav, "POST", "/admin/produto", form);
+    const api: ApiProps | null = await consultApiService(nav, "POST", "/admin/produto", false, form);
 
     if(api !== null && api.ok !== undefined && api.error == undefined){
       formElement.resetFields();

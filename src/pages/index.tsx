@@ -30,7 +30,7 @@ export default function Home() {
   const [ featuredProducts, setFeaturedProducts] = useState<ProductProps[] | null>(null);
 
   async function getProductsOnSale(){
-    const returnApi = await consultApiService(nav, "GET", "/produtos?session=promocao&page=1", null);
+    const returnApi = await consultApiService(nav, "GET", "/produtos?session=promocao&page=1", null, null);
     const productsOnSaleApi: ProductProps[] = returnApi.data as ProductProps[];
     
     if(returnApi && returnApi.data !== undefined && productsOnSaleApi.length > 0){
@@ -41,7 +41,7 @@ export default function Home() {
   }
 
   async function getNewProducts(){
-    const returnApi = await consultApiService(nav, "GET", "/produtos?session=novidade&page=1", null);
+    const returnApi = await consultApiService(nav, "GET", "/produtos?session=novidade&page=1", null, null);
     const productsInNewApi: ProductProps[] = returnApi.data as ProductProps[];
     
     if(returnApi && returnApi.data !== undefined && productsInNewApi.length > 0){
@@ -52,7 +52,7 @@ export default function Home() {
   }
 
   async function getFeaturedProducts(){
-    const returnApi = await consultApiService(nav, "GET", "/produtos?session=destaque&page=1", null);
+    const returnApi = await consultApiService(nav, "GET", "/produtos?session=destaque&page=1", null, null);
     const featuredProductsApi: ProductProps[] = returnApi.data as ProductProps[];
     
     if(returnApi && returnApi.data !== undefined && featuredProductsApi.length >0){

@@ -12,6 +12,8 @@ import { useStore } from "../service/useStore";
 import ModalWhatsapp from "./admin/ModalWhatsapp";
 import toast from "react-hot-toast";
 
+import style from "./MenuHome.module.css"
+
 type MenuItem = Required<MenuProps>["items"][number];
 
 interface ProductsProps{
@@ -49,7 +51,7 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
   const [ openAutoComplete, setOpenAutoComplete ] = useState(false);
 
   async function getInformationCategory(){
-    const dataCategories = await consultApiService(nav, "GET", "/categorias", null);
+    const dataCategories = await consultApiService(nav, "GET", "/categorias", null, null);
     
     if(dataCategories?.data){
       categoryApi.current = dataCategories.data as unknown as CategoryApiProps[];
@@ -93,7 +95,7 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
               { label: (<div onClick={ () => { setModalOpenInformationUser(true) } }>Alterar Informações Pessoais</div>), key:"1" },
             ]},
             { type: "group", label: "Conta" , children: [
-              { label: (<div onClick={ () => { consultApiService(nav, "DELETE", "/deslogar", null); setUserStore(null); nav.refresh() } }>Deslogar</div>), key:"2" },
+              { label: (<div onClick={ () => { consultApiService(nav, "DELETE", "/deslogar", null, null); setUserStore(null); nav.refresh() } }>Deslogar</div>), key:"2" },
             ]}
           ]
         }
@@ -119,7 +121,7 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
               { label: (<div onClick={ () => { setModalOpenInformationUser(true) } }>Alterar Informações Pessoais</div>), key:"1" },
             ]},
             { type: "group", label: "Conta" , children: [
-              { label: (<div onClick={ () => { consultApiService(nav, "DELETE", "/deslogar", null); setUserStore(null); nav.refresh() } }>Deslogar</div>), key:"1" },
+              { label: (<div onClick={ () => { consultApiService(nav, "DELETE", "/deslogar", null, null); setUserStore(null); nav.refresh() } }>Deslogar</div>), key:"1" },
             ]}
           ]
         }
@@ -144,7 +146,7 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
 
   async function productSearch(inputValue: string){
     console.log(inputValue);
-    const returnApi = await consultApiService(nav, "GET", `/produto/procurar/${inputValue}`, null);
+    const returnApi = await consultApiService(nav, "GET", `/produto/procurar/${inputValue}`, null, null);
     
     if(returnApi && returnApi?.data){
       let products = returnApi.data as unknown as ProductsProps[];
@@ -163,7 +165,7 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
         (
           <div>
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
-              <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
+              <div className={style.menu_category}></div>
               <div style={{ width: "45%", display: "flex", justifyContent: "center" }}>
                 <AutoComplete
                   placeholder="Procurar produto"
@@ -198,7 +200,7 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
         (
           <div>
             <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
-              <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
+              <div className={style.menu_category}></div>
               <div style={{ width: "45%", display: "flex", justifyContent: "center" }}>
                 <AutoComplete
                   placeholder="Procurar produto"
@@ -232,9 +234,9 @@ export default function MenuHome({ user, updateProductsOnSale, updateProductsInN
       { user?.role == "ADMIN" &&
         (
           <div>
-            <div style={{ display: "flex", justifyContent: "space", width: "100%", borderBottom: "1px solid #eee" }}>
-              <Menu mode="horizontal" items={menuItemsCategoryState} selectable={false} style={{ width: "30%", display: "flex", justifyContent: "center", border: 0 }}/>
-              <div style={{ width: "45%", display: "flex", justifyContent: "center" }}>
+            <div style={{ display: "flex", justifyContent: "space-around", width: "100%", borderBottom: "1px solid #eee" }}>
+              <div className={style.menu_category}></div>
+              <div className={style.menu_search} >
                 <AutoComplete
                   placeholder="Procurar produto"
                   open={openAutoComplete}

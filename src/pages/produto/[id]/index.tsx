@@ -50,7 +50,7 @@ export default function Product(){
   useEffect(() => {
     async function consultProduct(){
       try{
-        const returnApi = await consultApiService(nav, "GET", `/produto/${id}`, null);
+        const returnApi = await consultApiService(nav, "GET", `/produto/${id}`, false, null);
 
         if(returnApi ==null && returnApi.data == undefined){
           console.error("Erro ao consultar API #2");
@@ -78,7 +78,7 @@ export default function Product(){
   useEffect(() => {
     async function consultRelatedProducts(){
       try{
-        const returnApi = await consultApiService(nav, "GET", `/categoria/produtos/${infoProduct.category.id}`, null);
+        const returnApi = await consultApiService(nav, "GET", `/categoria/produtos/${infoProduct.category.id}`, false, null);
 
         if(returnApi ==null && returnApi.data == undefined){
           console.error("Erro ao consultar API #2");

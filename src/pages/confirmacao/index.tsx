@@ -4,7 +4,6 @@ import { Result, Button, Form, Input } from 'antd';
 import { MailOutlined } from '@ant-design/icons';
 import { bodyStyle, formStyle } from "../../styles/confirmacao.style";
 import { useRouter } from "next/navigation";
-import Link from 'next/link';
 import { consultApiService } from '../../service/consultApiService';
 
 interface FormDataProps{
@@ -15,11 +14,12 @@ export default function EmailConfirmation() {
   const nav = useRouter();
 
   function formSubmit(data: FormDataProps){
-    const form = new FormData();
 
-    form.append("email", data.email as string)
+    const form = {
+      "email": data.email
+    }
 
-    consultApiService(nav, "POST", "/confirmacao", form);
+    consultApiService(nav, "POST", "/confirmacao", true, JSON.stringify(form));
     return;
   }
 

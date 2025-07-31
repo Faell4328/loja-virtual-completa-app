@@ -17,12 +17,13 @@ export default function ModalCreateCategory({ modalOpen, setModalOpen, updateCat
 
   async function formSubmit(data: FormDataProps){
 
-    const form = new FormData();
-    const { name } = formElement.getFieldsValue();
+    const form = {
+      "name": data.name
+    }
 
-    (name) && form.append("name", name);
+    console.log(JSON.stringify(form));
 
-    const api: ApiProps | null = await consultApiService(nav, "POST", "/admin/categoria", form);
+    const api: ApiProps | null = await consultApiService(nav, "POST", "/admin/categoria", true, JSON.stringify(form));
 
     if(api !== null && api.ok !== undefined && api.error == undefined){
       formElement.resetFields();

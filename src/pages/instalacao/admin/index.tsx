@@ -25,7 +25,7 @@ export default function Admin(){
 
   useEffect(() => {
     async function consultApi(){
-      const returnApi = await consultApiService(nav, "GET", "/", null);
+      const returnApi = await consultApiService(nav, "GET", "/", null, null);
       apiConsulted.current = true
       if(returnApi?.redirect != "/instalacao/admin"){
         nav.push("/");
@@ -56,14 +56,14 @@ export default function Admin(){
 
   function formSubmit(data: FormDataProps){
 
-    const form = new FormData();
+    const form = {
+      "name": data.name,
+      "phone": data.phone,
+      "email": data.email,
+      "password": data.password
+    }
 
-    form.append("name", data.name);
-    form.append("phone", data.phone);
-    form.append("email", data.email);
-    form.append("password", data.password);
-
-    consultApiService(nav, "POST", "/instalacao/admin", form);
+    consultApiService(nav, "POST", "/instalacao/admin", true, JSON.stringify(form));
     return;
   }
 

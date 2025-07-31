@@ -57,7 +57,7 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen }: TypeProp
     }
 
     async function consultApi(){
-      const returnApi = await consultApiService(nav, "GET", "/usuario", null);
+      const returnApi = await consultApiService(nav, "GET", "/usuario", null, null);
 
       if(returnApi == null || returnApi?.data == null){
         console.error("Erro ao consultar os dados pessoais");
@@ -147,27 +147,36 @@ export default function ModalCreateProduct({ modalOpen, setModalOpen }: TypeProp
   }
 
   async function formSubmit(data: FormDataProps){
-    const form = new FormData();
 
-    const { name, phone } = formElement.getFieldsValue();
-
-    (name) && form.append("name", name);
-    (phone) && form.append("phone", phone);
+    let form = {};
 
     if(requiredAddressField){
-      const { description, zipCode, street, number, neighborhood, city, state, complement } = formElement.getFieldsValue();
-
-      (description) && form.append("description", description);
-      (zipCode) && form.append("zipCode", zipCode);
-      (street) && form.append("street", street);
-      (number) && form.append("number", number);
-      (neighborhood) && form.append("neighborhood", neighborhood);
-      (city) && form.append("city", city);
-      (state) && form.append("state", state);
-      (complement) && form.append("complement", complement);
+      const { name, phone, description, zipCode, street, number, neighborhood, city, state, complement } = formElement.getFieldsValue();
+      form = {
+        "name": name,
+        "phone": phone,
+        "description": description,
+        "zipCode": zipCode,
+        "street": street,
+        "number": number,
+        "neighborhood": neighborhood,
+        "city": city,
+        "state": state,
+        "complement": complement
+      }
+    }
+    else{
+      const { name, phone } = formElement.getFieldsValue();
+      form = {
+        "name": name,
+        "phoe": phone,
+      }
     }
 
-    consultApiService(nav, "PUT", "/usuario", form);
+    console.log("Valor de form é: ")
+    console.log(form);
+
+    consultApiService(nav, "PUT", "/usuario", true, JSON.stringify(form));
   }
 
   return(
